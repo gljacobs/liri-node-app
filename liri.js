@@ -12,6 +12,7 @@ var input = process.argv[3];
 
 if (cmd === "do-what-it-says") {
     fs.readFile(input, "utf8", function (err, data) {
+        if(err) throw err;
         var dataArr = data.split(",");
         cmd = dataArr[0];
         input = dataArr[1];
