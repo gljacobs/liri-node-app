@@ -26,6 +26,7 @@ fs.readFile("random.txt", "utf8", function (err, data) {
             var URL = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp"
             axios.get(URL).then(
                 function (response) {
+
                     console.log(`\n~~~~~~~~~~~~~~~~~~~~ Finding gigs for ${input} ~~~~~~~~~~~~~~~~~~~~`);
 
                     for (var i = 0; i < response.data.length; i++) {
@@ -41,11 +42,20 @@ fs.readFile("random.txt", "utf8", function (err, data) {
         case "spotify-this-song":
             spotify.search({ type: 'track', query: input, limit: 1 })
                 .then(function (response) {
-                    console.log(`\n~~~~~~~~~~~~~~~~~~~~ Finding Song Info for ${input} ~~~~~~~~~~~~~~~~~~~~`);
-                    console.log(`Artist: ${response.tracks.items[0].album.artists[0]["name"]}`);
-                    console.log(`Song: ${response.tracks.items[0].name}`);
-                    console.log(`Link: ${response.tracks.items[0].external_urls.spotify}`);
-                    console.log(`Album: ${response.tracks.items[0].album.name}`);
+                    if (response.tracks.total === 0) {
+                        console.log("No results found.... maybe try out this song?");
+                        console.log("Artist: Ace of Base");
+                        console.log("Song: The Sign")
+                        console.log("Link: https://open.spotify.com/track/0hrBpAOgrt8RXigk83LLNE")
+                        console.log("Album: The Sign (US Album) [Remastered]");
+                    }
+                    else {                        
+                        console.log(`\n~~~~~~~~~~~~~~~~~~~~ Finding Song Info for ${input} ~~~~~~~~~~~~~~~~~~~~`);
+                        console.log(`Artist: ${response.tracks.items[0].album.artists[0]["name"]}`);
+                        console.log(`Song: ${response.tracks.items[0].name}`);
+                        console.log(`Link: ${response.tracks.items[0].external_urls.spotify}`);
+                        console.log(`Album: ${response.tracks.items[0].album.name}`);
+                    }
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -55,15 +65,28 @@ fs.readFile("random.txt", "utf8", function (err, data) {
             var URL = "http://www.omdbapi.com/?t=" + input + "&apikey=trilogy";
             axios.get(URL).then(
                 function (response) {
-                    console.log(`\n~~~~~~~~~~~~~~~~~~~~ Finding Movie Info for ${input} ~~~~~~~~~~~~~~~~~~~~`);
-                    console.log(`Title: ${response.data.Title}`);
-                    console.log(`Released: ${response.data.Year}`);
-                    console.log(`IMDB Rating: ${response.data.imdbRating}`);
-                    console.log(`Rotten Tomatoes Rating: ${response.data.Ratings[1].Value}`);
-                    console.log(`Produced In: ${response.data.Country}`);
-                    console.log(`Language: ${response.data.Language}`);
-                    console.log(`Plot: ${response.data.Plot}`);
-                    console.log(`Actors: ${response.data.Actors}`);
+                    if (response.data.Response) {
+                        console.log("No results found...... Maybe try this movie out!");
+                        console.log("Title: Mr. Nobody");
+                        console.log("Released: 2009");
+                        console.log("IMDB Rating: 7.8");
+                        console.log("Rotten Tomatoes Rating: 67%");
+                        console.log("Produced In: Belgium, Germany, Canada, France, USA, U");
+                        console.log("Language: English, Mohawk");
+                        console.log("Plot: A boy stands on a station platform as a train is about to leave. Should he go with his mother or stay with his father? Infinite possibilities arise from this decision. As long as he doesn't choose, anything is possible.");
+                        console.log("Actors: Jared Leto, Sarah Polley, Diane Kruger, Linh Dan Pham");
+                    }
+                    else {
+                        console.log(`\n~~~~~~~~~~~~~~~~~~~~ Finding Movie Info for ${input} ~~~~~~~~~~~~~~~~~~~~`);
+                        console.log(`Title: ${response.data.Title}`);
+                        console.log(`Released: ${response.data.Year}`);
+                        console.log(`IMDB Rating: ${response.data.imdbRating}`);
+                        console.log(`Rotten Tomatoes Rating: ${response.data.Ratings[1].Value}`);
+                        console.log(`Produced In: ${response.data.Country}`);
+                        console.log(`Language: ${response.data.Language}`);
+                        console.log(`Plot: ${response.data.Plot}`);
+                        console.log(`Actors: ${response.data.Actors}`);
+                    }
                 })
                 .catch(function (err) {
                     console.log(err);
