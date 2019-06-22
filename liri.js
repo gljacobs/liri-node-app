@@ -9,9 +9,7 @@ var fs = require('fs');
 var spotify = new Spotify(keys.spotify);
 
 var cmd = process.argv[2];
-
-var input = process.argv[3];
-
+var input = process.argv.splice(3).join(" ");
 
 fs.readFile("random.txt", "utf8", function (err, data) {
     if (err) throw err;
@@ -26,24 +24,22 @@ fs.readFile("random.txt", "utf8", function (err, data) {
             var URL = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp"
             axios.get(URL).then(
                 function (response) {
-
-                    console.log(`\n~~~~~~~~~~~~~~~~~~~~ Finding gigs for ${input} ~~~~~~~~~~~~~~~~~~~~`);
-
-                    for (var i = 0; i < response.data.length; i++) {
-                        console.log(`\nVenue: ${response.data[i].venue.name}`);
-                        console.log(`Location: ${response.data[i].venue.city}, ${response.data[i].venue.country}`);
-                        console.log(`Date: ${moment(response.data[i].datetime).format("MM/DD/YYYY")}`);
-                    }
+                        console.log(`\n~~~~~~~~~~~~~~~~~~~~ Finding gigs for ${input} ~~~~~~~~~~~~~~~~~~~~`);                        
+                        for (var i = 0; i < response.data.length; i++) {
+                            console.log(`\nVenue: ${response.data[i].venue.name}`);
+                            console.log(`Location: ${response.data[i].venue.city}, ${response.data[i].venue.country}`);
+                            console.log(`Date: ${moment(response.data[i].datetime).format("MM/DD/YYYY")}`);
+                        }
                 })
                 .catch(function (err) {
-                    console.log(err);
+                    console.log("\nThis band does not exist or isn't currently touring, sorry.");
                 });
             break;
         case "spotify-this-song":
             spotify.search({ type: 'track', query: input, limit: 1 })
                 .then(function (response) {
                     if (response.tracks.total === 0) {
-                        console.log("No results found.... maybe try out this song?");
+                        console.log("\nNo results found.... maybe try out this song?");
                         console.log("Artist: Ace of Base");
                         console.log("Song: The Sign")
                         console.log("Link: https://open.spotify.com/track/0hrBpAOgrt8RXigk83LLNE")
@@ -64,9 +60,9 @@ fs.readFile("random.txt", "utf8", function (err, data) {
         case "movie-this":
             var URL = "http://www.omdbapi.com/?t=" + input + "&apikey=trilogy";
             axios.get(URL).then(
-                function (response) {
-                    if (response.data.Response) {
-                        console.log("No results found...... Maybe try this movie out!");
+                function (response) {                    
+                    if (!response.data.Title) {
+                        console.log("\nNo results found...... Maybe try this movie out!");
                         console.log("Title: Mr. Nobody");
                         console.log("Released: 2009");
                         console.log("IMDB Rating: 7.8");
@@ -93,7 +89,7 @@ fs.readFile("random.txt", "utf8", function (err, data) {
                 });
             break;
         default:
-            console.log("Please enter a valid command.");
+            console.log("\nPlease enter a valid command.");
     }
 });
 
